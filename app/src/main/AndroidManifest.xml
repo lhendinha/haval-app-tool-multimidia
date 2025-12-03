@@ -12,6 +12,13 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+    <queries>
+        <intent>
+            <action android:name="com.gwm.cluster.SECONDARY" />
+        </intent>
+    </queries>
 
     <application
         android:name="br.com.redesurftank.App"
@@ -130,6 +137,13 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+        <service
+            android:name="com.tools.cluster.ClusterSecondaryMultiplexerService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.gwm.cluster.SECONDARY" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
