@@ -6,6 +6,12 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+fun Project.readSecret(key: String): String =
+    System.getenv(key)
+        ?: providers.gradleProperty(key).orNull
+        ?: (if (properties.containsKey(key)) properties[key] as String else null)
+        ?: error("Missing signing secret: $key (defina como ENV ou em gradle.properties)")
+
 android {
     namespace = "br.com.redesurftank.havalshisuku"
     compileSdk = 36
@@ -21,10 +27,10 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("release.keystore")
-            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
-            keyAlias = System.getenv("SIGNING_KEY_ALIAS")
-            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+            storeFile = file("haval-key.keystore")
+            storePassword = project.readSecret("SIGNING_STORE_PASSWORD")
+            keyAlias = project.readSecret("SIGNING_KEY_ALIAS")
+            keyPassword = project.readSecret("SIGNING_KEY_PASSWORD")
         }
     }
 

@@ -1,51 +1,149 @@
 package br.com.redesurftank.havalshisuku.models
 
 enum class SharedPreferencesKeys(val key: String, val description: String) {
-    DISABLE_MONITORING("disableMonitoring", "Manter desativado monitoramento de distrações"),
-    CLOSE_WINDOW_ON_POWER_OFF("closeWindowOnPowerOff", "Fechar janela ao desligar o veículo"),
-    CLOSE_WINDOW_ON_FOLD_MIRROR("closeWindowOnFoldMirror", "Fechar janela ao recolher retrovisores"),
-    CLOSE_SUNROOF_ON_POWER_OFF("closeSunroofOnPowerOff", "Fechar teto solar ao desligar o veículo"),
-    CLOSE_SUNROOF_ON_FOLD_MIRROR("closeSunroofOnFoldMirror", "Fechar teto solar ao recolher retrovisores"),
-    CLOSE_WINDOWS_ON_SPEED("closeWindowsOnSpeed", "Fechar janelas ao atingir velocidade"),
-    CLOSE_SUNROOF_ON_SPEED("closeSunroofOnSpeed", "Fechar teto solar ao atingir velocidade"),
-    CLOSE_SUNROOF_SUN_SHADE_ON_CLOSE_SUNROOF("closeSunroofSunShadeOnCloseSunRoof", "Fechar cortina do teto ao fechar teto solar"),
-    SET_STARTUP_VOLUME("setStartupVolume", "Definir volume ao ligar o veículo"),
-    STARTUP_VOLUME("startupVolume", "Volume ao ligar o veículo"),
-    SPEED_THRESHOLD("speedThreshold", "Velocidade limite para fechar janelas"),
-    SUNROOF_SPEED_THRESHOLD("sunroofSpeedThreshold", "Velocidade limite para fechar teto solar"),
-    NIGHT_START_HOUR("nightStartHour", "Hora de início da noite"),
-    NIGHT_START_MINUTE("nightStartMinute", "Minuto de início da noite"),
-    NIGHT_END_HOUR("nightEndHour", "Hora de fim da noite"),
-    NIGHT_END_MINUTE("nightEndMinute", "Minuto de fim da noite"),
-    ENABLE_AUTO_BRIGHTNESS("enableAutoBrightness", "Habilitar ajuste automático de brilho"),
-    AUTO_BRIGHTNESS_LEVEL_NIGHT("autoBrightnessLevelNight", "Nível de brilho automático à noite"),
-    AUTO_BRIGHTNESS_LEVEL_DAY("autoBrightnessLevelDay", "Nível de brilho automático durante o dia"),
-    ENABLE_FRIDA_HOOKS("enableFridaHooks", "Habilitar hooks do Frida"),
-    ENABLE_FRIDA_HOOK_SYSTEM_SERVER("enableFridaHookSystemServer", "Habilitar hooks do Frida no System Server"),
-    ENABLE_INSTRUMENT_PROJECTOR("enableInstrumentProjector", "Habilitar dados no painel de instrumentos"),
-    ENABLE_INSTRUMENT_REVISION_WARNING("enableInstrumentRevisionWarning", "Habilitar aviso de revisão no painel de instrumentos"),
-    ENABLE_INSTRUMENT_EV_BATTERY_PERCENTAGE("enableInstrumentEvBatteryPercentage", "Habilitar porcentagem da bateria EV no painel de instrumentos"),
-    ENABLE_INSTRUMENT_CUSTOM_MEDIA_INTEGRATION("enableInstrumentCustomMediaIntegration", "Habilitar integração personalizada de mídia no painel de instrumentos"),
-    ENABLE_AC_CONTROL_VIA_STEERING_WHEEL("enableAcControlViaSteeringWheel", "Habilitar controle de ar-condicionado pelo volante"),
-    INSTRUMENT_REVISION_KM("instrumentRevisionKm", "Quilometragem para aviso de revisão no painel de instrumentos"),
-    INSTRUMENT_REVISION_NEXT_DATE("instrumentRevisionNextDate", "Data da próxima revisão no painel de instrumentos"),
-    DISABLE_AVAS("disableAvas", "Desativar AVAS (sistema de alerta de veículo silencioso)"),
-    DISABLE_AVM_CAR_STOPPED("disableAvmCarStopped", "Desativar camera AVM quando o carro está parado"),
-    CAR_MONITOR_PROPERTIES("carMonitorProperties", "Propriedades do monitoramento do carro"),
-    BYPASS_SELF_INSTALLATION_INTEGRITY_CHECK("bypassSelfInstallationIntegrityCheck", "Ignorar verificação de integridade da instalação"),
-    SELF_INSTALLATION_INTEGRITY_CHECK("selfInstallationIntegrityCheck", "Verificação de integridade da instalação"),
-    ADVANCE_USE("advanceUse", "Uso avançado"),
-    CURRENT_USER("currentUser", "Usuário atual"),
-    LAST_CLUSTER_AC_CONFIG("lastClusterAcConfig", "Última configuração do ar-condicionado do cluster"),
-    DISABLE_BLUETOOTH_ON_POWER_OFF("disableBluetoothOnPowerOff", "Desativar Bluetooth ao desligar o veículo"),
-    DISABLE_HOTSPOT_ON_POWER_OFF("disableHotspotOnPowerOff", "Desativar ponto de acesso ao desligar o veículo"),
-    BLUETOOTH_STATE_ON_POWER_OFF("bluetoothStateOnPowerOff", "Estado do Bluetooth ao desligar o veículo"),
-    ENABLE_SEAT_VENTILATION_ON_AC_ON("enableSeatVentilationOnAcOn", "Habilitar ventilação do banco do motorista ao ligar o ar-condicionado"),
-    ENABLE_STEERING_WHEEL_CUSTOM_BUTTONS("enableSteeringWheelCustomButtons", "Habilitar botões personalizados no volante"),
-    STEERING_WHEEL_CUSTOM_BUTON_1_ACTION("steeringWheelCustomButon1Action", "Ação do botão personalizado 1 do volante"),
-    STEERING_WHEEL_CUSTOM_BUTON_2_ACTION("steeringWheelCustomButon2Action", "Ação do botão personalizado 2 do volante"),
-    STEERING_WHEEL_CUSTOM_BUTON_1_ACTION_ORIGINAL("steeringWheelCustomButon1ActionOriginal", "Ação original do botão personalizado 1 do volante"),
-    STEERING_WHEEL_CUSTOM_BUTON_2_ACTION_ORIGINAL("steeringWheelCustomButon2ActionOriginal", "Ação original do botão personalizado 2 do volante"),
-    STEERING_WHEEL_OPEN_APP_PACKAGE_BUTTON_1("steeringWheelOpenAppPackageButton1", "Pacote do aplicativo para o botão personalizado 1 do volante"),
-    STEERING_WHEEL_OPEN_APP_PACKAGE_BUTTON_2("steeringWheelOpenAppPackageButton2", "Pacote do aplicativo para o botão personalizado 2 do volante"),
+        DISABLE_MONITORING("disableMonitoring", "Manter desativado monitoramento de distrações"),
+        CLOSE_WINDOW_ON_POWER_OFF("closeWindowOnPowerOff", "Fechar janela ao desligar o veículo"),
+        CLOSE_WINDOW_ON_FOLD_MIRROR(
+                "closeWindowOnFoldMirror",
+                "Fechar janela ao recolher retrovisores"
+        ),
+        CLOSE_SUNROOF_ON_POWER_OFF(
+                "closeSunroofOnPowerOff",
+                "Fechar teto solar ao desligar o veículo"
+        ),
+        CLOSE_SUNROOF_ON_FOLD_MIRROR(
+                "closeSunroofOnFoldMirror",
+                "Fechar teto solar ao recolher retrovisores"
+        ),
+        CLOSE_WINDOWS_ON_SPEED("closeWindowsOnSpeed", "Fechar janelas ao atingir velocidade"),
+        CLOSE_SUNROOF_ON_SPEED("closeSunroofOnSpeed", "Fechar teto solar ao atingir velocidade"),
+        CLOSE_SUNROOF_SUN_SHADE_ON_CLOSE_SUNROOF(
+                "closeSunroofSunShadeOnCloseSunRoof",
+                "Fechar cortina do teto ao fechar teto solar"
+        ),
+        SET_STARTUP_VOLUME("setStartupVolume", "Definir volume ao ligar o veículo"),
+        STARTUP_VOLUME("startupVolume", "Volume ao ligar o veículo"),
+        SPEED_THRESHOLD("speedThreshold", "Velocidade limite para fechar janelas"),
+        SUNROOF_SPEED_THRESHOLD(
+                "sunroofSpeedThreshold",
+                "Velocidade limite para fechar teto solar"
+        ),
+        NIGHT_START_HOUR("nightStartHour", "Hora de início da noite"),
+        NIGHT_START_MINUTE("nightStartMinute", "Minuto de início da noite"),
+        NIGHT_END_HOUR("nightEndHour", "Hora de fim da noite"),
+        NIGHT_END_MINUTE("nightEndMinute", "Minuto de fim da noite"),
+        ENABLE_AUTO_BRIGHTNESS("enableAutoBrightness", "Habilitar ajuste automático de brilho"),
+        AUTO_BRIGHTNESS_LEVEL_NIGHT(
+                "autoBrightnessLevelNight",
+                "Nível de brilho automático à noite"
+        ),
+        AUTO_BRIGHTNESS_LEVEL_DAY(
+                "autoBrightnessLevelDay",
+                "Nível de brilho automático durante o dia"
+        ),
+        ENABLE_FRIDA_HOOKS("enableFridaHooks", "Habilitar hooks do Frida"),
+        ENABLE_FRIDA_HOOK_SYSTEM_SERVER(
+                "enableFridaHookSystemServer",
+                "Habilitar hooks do Frida no System Server"
+        ),
+        ENABLE_INSTRUMENT_PROJECTOR(
+                "enableInstrumentProjector",
+                "Habilitar dados no painel de instrumentos"
+        ),
+        ENABLE_INSTRUMENT_REVISION_WARNING(
+                "enableInstrumentRevisionWarning",
+                "Habilitar aviso de revisão no painel de instrumentos"
+        ),
+        ENABLE_INSTRUMENT_EV_BATTERY_PERCENTAGE(
+                "enableInstrumentEvBatteryPercentage",
+                "Habilitar porcentagem da bateria EV no painel de instrumentos"
+        ),
+        ENABLE_INSTRUMENT_CUSTOM_MEDIA_INTEGRATION(
+                "enableInstrumentCustomMediaIntegration",
+                "Habilitar integração personalizada de mídia no painel de instrumentos"
+        ),
+        ENABLE_AC_CONTROL_VIA_STEERING_WHEEL(
+                "enableAcControlViaSteeringWheel",
+                "Habilitar controle de ar-condicionado pelo volante"
+        ),
+        INSTRUMENT_REVISION_KM(
+                "instrumentRevisionKm",
+                "Quilometragem para aviso de revisão no painel de instrumentos"
+        ),
+        INSTRUMENT_REVISION_NEXT_DATE(
+                "instrumentRevisionNextDate",
+                "Data da próxima revisão no painel de instrumentos"
+        ),
+        DISABLE_AVAS("disableAvas", "Desativar AVAS (sistema de alerta de veículo silencioso)"),
+        DISABLE_AVM_CAR_STOPPED(
+                "disableAvmCarStopped",
+                "Desativar camera AVM quando o carro está parado"
+        ),
+        CAR_MONITOR_PROPERTIES("carMonitorProperties", "Propriedades do monitoramento do carro"),
+        BYPASS_SELF_INSTALLATION_INTEGRITY_CHECK(
+                "bypassSelfInstallationIntegrityCheck",
+                "Ignorar verificação de integridade da instalação"
+        ),
+        SELF_INSTALLATION_INTEGRITY_CHECK(
+                "selfInstallationIntegrityCheck",
+                "Verificação de integridade da instalação"
+        ),
+        ADVANCE_USE("advanceUse", "Uso avançado"),
+        CURRENT_USER("currentUser", "Usuário atual"),
+        LAST_CLUSTER_AC_CONFIG(
+                "lastClusterAcConfig",
+                "Última configuração do ar-condicionado do cluster"
+        ),
+        DISABLE_BLUETOOTH_ON_POWER_OFF(
+                "disableBluetoothOnPowerOff",
+                "Desativar Bluetooth ao desligar o veículo"
+        ),
+        DISABLE_HOTSPOT_ON_POWER_OFF(
+                "disableHotspotOnPowerOff",
+                "Desativar ponto de acesso ao desligar o veículo"
+        ),
+        BLUETOOTH_STATE_ON_POWER_OFF(
+                "bluetoothStateOnPowerOff",
+                "Estado do Bluetooth ao desligar o veículo"
+        ),
+        ENABLE_SEAT_VENTILATION_ON_AC_ON(
+                "enableSeatVentilationOnAcOn",
+                "Habilitar ventilação do banco do motorista ao ligar o ar-condicionado"
+        ),
+        ENABLE_STEERING_WHEEL_CUSTOM_BUTTONS(
+                "enableSteeringWheelCustomButtons",
+                "Habilitar botões personalizados no volante"
+        ),
+        STEERING_WHEEL_CUSTOM_BUTON_1_ACTION(
+                "steeringWheelCustomButon1Action",
+                "Ação do botão personalizado 1 do volante"
+        ),
+        STEERING_WHEEL_CUSTOM_BUTON_2_ACTION(
+                "steeringWheelCustomButon2Action",
+                "Ação do botão personalizado 2 do volante"
+        ),
+        STEERING_WHEEL_CUSTOM_BUTON_1_ACTION_ORIGINAL(
+                "steeringWheelCustomButon1ActionOriginal",
+                "Ação original do botão personalizado 1 do volante"
+        ),
+        STEERING_WHEEL_CUSTOM_BUTON_2_ACTION_ORIGINAL(
+                "steeringWheelCustomButon2ActionOriginal",
+                "Ação original do botão personalizado 2 do volante"
+        ),
+        STEERING_WHEEL_OPEN_APP_PACKAGE_BUTTON_1(
+                "steeringWheelOpenAppPackageButton1",
+                "Pacote do aplicativo para o botão personalizado 1 do volante"
+        ),
+        STEERING_WHEEL_OPEN_APP_PACKAGE_BUTTON_2(
+                "steeringWheelOpenAppPackageButton2",
+                "Pacote do aplicativo para o botão personalizado 2 do volante"
+        ),
+        ENABLE_SECONDARY_CLUSTER_MULTIPLEXER(
+                "ui.secondary_cluster_multiplexer_enable",
+                "Multiplexar cluster secundário (exibe AC temporariamente sobre o player)"
+        ),
+        SECONDARY_MULTIPLEXER_TIMEOUT_MS(
+                "ui.secondary_cluster_timeout_ms",
+                "Tempo em ms para ocultar o AC e voltar ao player"
+        ),
 }
