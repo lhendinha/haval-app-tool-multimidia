@@ -25,6 +25,10 @@ import br.com.redesurftank.havalshisuku.models.ServiceManagerEventType
 import br.com.redesurftank.havalshisuku.models.SharedPreferencesKeys
 import br.com.redesurftank.havalshisuku.models.SteeringWheelAcControlType
 
+/**
+ * Mostra o overlay do AC SOMENTE no card 1 e SOMENTE durante o timeout. Fora isso, a janela
+ * (Presentation) é removida do display via dismiss().
+ */
 class InstrumentProjector2(outerContext: Context, display: Display) :
         BaseProjector(outerContext, display), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -58,6 +62,7 @@ class InstrumentProjector2(outerContext: Context, display: Display) :
                                     FrameLayout.LayoutParams.MATCH_PARENT
                             )
                     setBackgroundColor(Color.TRANSPARENT)
+                    isVisible = false
                 }
         setContentView(root)
 
@@ -87,6 +92,12 @@ class InstrumentProjector2(outerContext: Context, display: Display) :
                     setBackgroundColor(Color.TRANSPARENT)
                 }
         root.addView(circularView)
+
+        // Se o ProjectorManager deu show() ao criar, e o card atual NÃO é o 1, remova a janela já.
+        val currentCard = ServiceManager.getInstance().clusterCardView
+        if (currentCard != 1 && isShowing) {
+            dismiss() // evita bloquear OEM em clusters 2/3
+        }
 
         ServiceManager.getInstance().addDataChangedListener { key, value ->
             ensureUi {
@@ -121,12 +132,18 @@ class InstrumentProjector2(outerContext: Context, display: Display) :
                     ServiceManagerEventType.CLUSTER_CARD_CHANGED -> {
                         val card = args[0] as Int
                         if (card == 1) {
+                            // Não mostra nada por padrão; aparece só em interação
+                            // (showAcOverlayTemporarily)
                             circularView.isVisible = false
                             webViewAc?.isVisible = false
+                            if (isShowing) {
+                                // Se estava com janela aberta por algum motivo, feche até a próxima
+                                // interação
+                                dismiss()
+                            }
                         } else {
-                            circularView.isVisible = false
-                            webViewAc?.isVisible = false
-                            cancelHideOverlay()
+                            // Qualquer outro card: garanta que a janela NÃO exista
+                            hideAcOverlay()
                         }
                     }
                     ServiceManagerEventType.STEERING_WHEEL_AC_CONTROL -> {
@@ -149,37 +166,6 @@ class InstrumentProjector2(outerContext: Context, display: Display) :
                 }
             }
         }
-
-        root.isVisible = shouldShowProjector() && ServiceManager.getInstance().isMainScreenOn
-    }
-
-    private fun shouldShowProjector(): Boolean {
-        return preferences.getBoolean(
-                SharedPreferencesKeys.ENABLE_INSTRUMENT_CUSTOM_MEDIA_INTEGRATION.key,
-                false
-        )
-    }
-
-    override fun onStart() {
-        super.onStart()
-        ensureUi { updateRootVisibility() }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        ensureUi { cancelHideOverlay() }
-    }
-
-    override fun cancel() {
-        ensureUi {
-            cancelHideOverlay()
-            preferences.unregisterOnSharedPreferenceChangeListener(this)
-        }
-        super.cancel()
-    }
-
-    private fun updateRootVisibility() {
-        root.isVisible = shouldShowProjector() && ServiceManager.getInstance().isMainScreenOn
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -217,18 +203,39 @@ class InstrumentProjector2(outerContext: Context, display: Display) :
         updateValuesWebViewAc()
     }
 
+    // --- Multiplexação real (cria/remove janela do display) ---
     private fun showAcOverlayTemporarily() {
         if (!isMultiplexerEnabled()) return
         if (ServiceManager.getInstance().clusterCardView != 1) return
+
         setupAcControlView(circularView)
+
+        if (!isShowing) {
+            try {
+                show() // cria janela no display
+            } catch (_: Throwable) {
+                /* evita crash se display mutou */
+            }
+        }
+
+        root.isVisible = true
         circularView.isVisible = true
         webViewAc?.isVisible = true
+
         scheduleHideOverlay()
     }
 
     private fun hideAcOverlay() {
-        webViewAc?.isVisible = false
+        cancelHideOverlay()
+        try {
+            if (isShowing) {
+                dismiss() // remove janela do display -> OEM volta a listar/mostrar
+            }
+        } catch (_: Throwable) {}
+        // limpar estados visuais para próxima reutilização
+        root.isVisible = false
         circularView.isVisible = false
+        webViewAc?.isVisible = false
     }
 
     private fun scheduleHideOverlay() {
@@ -288,21 +295,27 @@ class InstrumentProjector2(outerContext: Context, display: Display) :
     }
 
     override fun carMainScreenOff() {
-        ensureUi {
-            root.isVisible = false
-            cancelHideOverlay()
-        }
+        ensureUi { hideAcOverlay() }
     }
 
     override fun carMainScreenOn() {
-        ensureUi { root.isVisible = true }
+        // Mantemos a janela desligada até a próxima interação
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if (key == SharedPreferencesKeys.ENABLE_INSTRUMENT_CUSTOM_MEDIA_INTEGRATION.key) {
-            ensureUi { updateRootVisibility() }
-        }
+    override fun onStop() {
+        super.onStop()
+        ensureUi { hideAcOverlay() }
     }
+
+    override fun cancel() {
+        ensureUi {
+            hideAcOverlay()
+            preferences.unregisterOnSharedPreferenceChangeListener(this)
+        }
+        super.cancel()
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {}
 
     private fun defaultSharedPreferences(): SharedPreferences {
         val name = App.getContext().packageName + "_preferences"
